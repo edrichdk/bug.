@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<select id="color">
+<option value="red">Red</option>
+<option value="blue">Blue</option>
+</select>
+
+<p id="output">Color me</p>
+
+<script>
+
+  document.getElementById("color").addEventListener("change", function () {
+    document.getElementById("output").style.color = this.value;
+});
+</script>
+
+</body>
+</html>

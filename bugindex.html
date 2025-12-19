@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vehicle Management - History</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  background:#f5f6f8;
+  color:#333;
+}
+
+/* ===== LAYOUT ===== */
+.wrapper{
+  display:flex;
+  min-height:100vh;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:64px;
+  background:linear-gradient(180deg,#2b0bb8,#3b1bdc);
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:12px 0;
+}
+.sidebar .logo{
+  font-weight:bold;
+  margin-bottom:30px;
+}
+.sidebar .icon{
+  width:40px;
+  height:40px;
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:6px 0;
+  cursor:pointer;
+}
+.sidebar .icon:hover{background:rgba(255,255,255,.15)}
+
+/* MAIN */
+.main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+
+/* TOP BAR */
+.topbar{
+  height:56px;
+  background:#fff;
+  border-bottom:1px solid #e0e0e0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+}
+.topbar-title{
+  font-weight:600;
+  letter-spacing:.5px;
+}
+.user{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:13px;
+}
+
+/* CONTENT */
+.content{
+  padding:20px 30px;
+}
+
+/* TABS */
+.tabs{
+  display:flex;
+  gap:10px;
+  margin-bottom:16px;
+}
+.tab{
+  padding:8px 16px;
+  background:#fff;
+  border-radius:6px;
+  font-size:13px;
+  border:1px solid #e0e0e0;
+}
+.tab.active{
+  border:1px solid #6d5cff;
+  color:#6d5cff;
+  background:#f5f4ff;
+}
+
+/* CARD */
+.card{
+  background:#e9ecff;
+  border-radius:10px;
+  padding:16px;
+  box-shadow:0 2px 6px rgba(0,0,0,.08);
+}
+.card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+/* SEARCH */
+.search{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.search input{
+  border:none;
+  border-bottom:2px solid #6d5cff;
+  outline:none;
+  background:transparent;
+  padding:6px 4px;
+  width:260px;
+}
+
+/* FILTER */
+.filter-wrap{position:relative}
+.filter-btn{
+  cursor:pointer;
+  padding:6px;
+}
+.filter-pop{
+  position:absolute;
+  right:0;
+  top:32px;
+  width:240px;
+  background:#fff;
+  border-radius:8px;
+  box-shadow:0 10px 25px rgba(0,0,0,.2);
+  padding:14px;
+  display:none;
+  z-index:10;
+}
+.filter-pop h4{
+  margin:0 0 10px;
+  font-size:13px;
+}
+.filter-pop label{
+  font-size:12px;
+  color:#555;
+}
+.filter-pop input{
+  width:100%;
+  padding:6px;
+  margin-bottom:10px;
+}
+.reset{
+  float:right;
+  font-size:12px;
+  color:#6d5cff;
+  cursor:pointer;
+}
+
+/* TABLE */
+.table-wrap{
+  background:#fff;
+  border-radius:10px;
+  overflow-x:auto;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+thead{
+  background:#fff;
+}
+th{
+  text-align:left;
+  font-size:12px;
+  padding:12px;
+}
+td{
+  padding:12px;
+  font-size:13px;
+}
+tbody tr:nth-child(odd){background:#f7f8ff}
+tbody tr:nth-child(even){background:#ffffff}
+.pdf{
+  color:#e53935;
+  font-size:18px;
+  cursor:pointer;
+}
+
+/* PAGINATION */
+.pagination{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:12px;
+  font-size:12px;
+  padding:10px;
+}
+
+/* MODAL */
+.modal-bg{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.5);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:20;
+}
+.modal{
+  background:#fff;
+  padding:20px;
+  width:320px;
+  border-radius:8px;
+}
+.modal h3{text-align:center;margin-top:0}
+.modal select,.modal input{
+  width:100%;
+  padding:8px;
+  margin-bottom:10px;
+}
+.modal button{
+  width:100%;
+  padding:10px;
+  background:#1976d2;
+  color:#fff;
+  border:none;
+  border-radius:4px;
+  cursor:pointer;
+}
+
+/* TOAST */
+.toast{
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#e53935;
+  color:#fff;
+  padding:10px 20px;
+  border-radius:4px;
+  display:none;
+  z-index:30;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">Logo</div>
+    <div class="icon">▦</div>
+    <div class="icon">✔</div>
+    <div class="icon">📊</div>
+    <div class="icon">⚙</div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <div class="topbar">
+      <div class="topbar-title">VEHICLE MANAGEMENT</div>
+      <div class="user">
+        <span>Initial User</span>
+        <span style="color:#888">Administrator</span>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div class="tabs">
+        <div class="tab">JobOrder</div>
+        <div class="tab">Parts</div>
+        <div class="tab">Payments</div>
+        <div class="tab active">History</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <strong>History</strong>
+
+          <div style="display:flex;gap:12px;align-items:center">
+            <div class="search">
+              🔍 <input id="search" placeholder="Search">
+            </div>
+
+            <div class="filter-wrap">
+              <div class="filter-btn" onclick="toggleFilter()">⚙</div>
+              <div class="filter-pop" id="filterPop">
+                <span class="reset" onclick="resetFilters()">RESET</span>
+                <h4>FILTERS</h4>
+                <label>Arrival Date</label>
+                <input type="date" id="fa">
+                <label>Delivered Date</label>
+                <input type="date" id="fd">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ARRIVAL DATE</th>
+                <th>DELIVERY DATE</th>
+                <th>TOTAL HOURS</th>
+                <th>TOTAL AMOUNT (AED)</th>
+                <th>INVOICE</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr>
+                <td>13-10-2025</td>
+                <td>14-10-2025</td>
+                <td>0:00</td>
+                <td>0.00</td>
+                <td class="pdf" onclick="openModal()">📄</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination">
+          Rows per page: 10
+          <span>1–1 of 1</span>
+          ‹ ›
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <h3>Select Invoice Date</h3>
+    <label>Invoice Date</label>
+    <select id="dateType" onchange="toggleDate()">
+      <option value="current">Current Date</option>
+      <option value="delivery">Delivery Date</option>
+      <option value="custom">Pick a Date</option>
+    </select>
+    <input type="date" id="customDate" style="display:none">
+    <button onclick="submitInvoice()">SUBMIT</button>
+  </div>
+</div>
+
+<div class="toast" id="toast">Please select an invoice date.</div>
+
+<script>
+function toggleFilter(){
+  filterPop.style.display=filterPop.style.display==="block"?"none":"block";
+}
+function resetFilters(){
+  fa.value="";fd.value="";
+}
+function openModal(){
+  modalBg.style.display="flex";
+}
+modalBg.onclick=e=>{if(e.target===modalBg)modalBg.style.display="none";}
+window.onkeydown=e=>{if(e.key==="Escape")modalBg.style.display="none";}
+function toggleDate(){
+  customDate.style.display=dateType.value==="custom"?"block":"none";
+}
+function submitInvoice(){
+  if(dateType.value==="custom"&&!customDate.value){
+    toast.style.display="block";
+    setTimeout(()=>toast.style.display="none",3000);
+    return;
+  }
+  alert("Invoice generated");
+  modalBg.style.display="none";
+}
+</script>
+
+</body>
+</html>
