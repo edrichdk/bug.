@@ -2,389 +2,297 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<title>Job History</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vehicle Management - History</title>
 
 <style>
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Inter,Arial,sans-serif;
-  background:#f5f6f8;
-  color:#333;
+* { box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
+
+body {
+    margin: 0;
+    background: #f4f6fb;
 }
 
-/* ===== LAYOUT ===== */
-.wrapper{
-  display:flex;
-  min-height:100vh;
-}
-
-/* SIDEBAR */
-.sidebar{
-  width:64px;
-  background:linear-gradient(180deg,#2b0bb8,#3b1bdc);
-  color:#fff;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:12px 0;
-}
-.sidebar .logo{
-  font-weight:bold;
-  margin-bottom:30px;
-}
-.sidebar .icon{
-  width:40px;
-  height:40px;
-  border-radius:8px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:6px 0;
-  cursor:pointer;
-}
-.sidebar .icon:hover{background:rgba(255,255,255,.15)}
-
-/* MAIN */
-.main{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-}
-
-/* TOP BAR */
-.topbar{
-  height:56px;
-  background:#fff;
-  border-bottom:1px solid #e0e0e0;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 20px;
-}
-.topbar-title{
-  font-weight:600;
-  letter-spacing:.5px;
-}
-.user{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-size:13px;
-}
-
-/* CONTENT */
-.content{
-  padding:20px 30px;
-}
-
-/* TABS */
-.tabs{
-  display:flex;
-  gap:10px;
-  margin-bottom:16px;
-}
-.tab{
-  padding:8px 16px;
-  background:#fff;
-  border-radius:6px;
-  font-size:13px;
-  border:1px solid #e0e0e0;
-}
-.tab.active{
-  border:1px solid #6d5cff;
-  color:#6d5cff;
-  background:#f5f4ff;
+/* HEADER */
+.header {
+    padding: 20px 30px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
 }
 
 /* CARD */
-.card{
-  background:#e9ecff;
-  border-radius:10px;
-  padding:16px;
-  box-shadow:0 2px 6px rgba(0,0,0,.08);
-}
-.card-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:10px;
+.card {
+    margin: 0 30px;
+    background: #E5E8FF;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 4px rgba(0,0,0,0.25);
 }
 
 /* SEARCH */
-.search{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.search input{
-  border:none;
-  border-bottom:2px solid #6d5cff;
-  outline:none;
-  background:transparent;
-  padding:6px 4px;
-  width:260px;
+.search-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
 }
 
-/* FILTER */
-.filter-wrap{position:relative}
-.filter-btn{
-  cursor:pointer;
-  padding:6px;
+.search-bar input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
 }
-.filter-pop{
-  position:absolute;
-  right:0;
-  top:32px;
-  width:240px;
-  background:#fff;
-  border-radius:8px;
-  box-shadow:0 10px 25px rgba(0,0,0,.2);
-  padding:14px;
-  display:none;
-  z-index:10;
+
+.filter-btn {
+    margin-left: 10px;
+    padding: 10px 14px;
+    background: #5a5cff;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
 }
-.filter-pop h4{
-  margin:0 0 10px;
-  font-size:13px;
+
+/* FILTER POPUP */
+.filter-box {
+    position: absolute;
+    right: 40px;
+    top: 160px;
+    width: 220px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    display: none;
 }
-.filter-pop label{
-  font-size:12px;
-  color:#555;
+
+.filter-box label {
+    font-size: 12px;
+    font-weight: bold;
 }
-.filter-pop input{
-  width:100%;
-  padding:6px;
-  margin-bottom:10px;
+
+.filter-box input {
+    width: 100%;
+    margin: 6px 0 10px;
+    padding: 6px;
 }
-.reset{
-  float:right;
-  font-size:12px;
-  color:#6d5cff;
-  cursor:pointer;
+
+.filter-actions {
+    display: flex;
+    justify-content: space-between;
 }
+
+.filter-actions button {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.apply { background:#5a5cff;color:#fff;}
+.reset { background:#eee; }
 
 /* TABLE */
-.table-wrap{
-  background:#fff;
-  border-radius:10px;
-  overflow-x:auto;
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
 }
-table{
-  width:100%;
-  border-collapse:collapse;
+
+th {
+    background: #D0D4F2;
+    padding: 12px;
+    text-align: left;
 }
-thead{
-  background:#fff;
+
+td {
+    padding: 12px;
 }
-th{
-  text-align:left;
-  font-size:12px;
-  padding:12px;
+
+tr:nth-child(even) { background: #fff; }
+tr:nth-child(odd) { background: #F7F6FE; }
+
+.no-data {
+    text-align: center;
+    padding: 20px;
 }
-td{
-  padding:12px;
-  font-size:13px;
-}
-tbody tr:nth-child(odd){background:#f7f8ff}
-tbody tr:nth-child(even){background:#ffffff}
-.pdf{
-  color:#e53935;
-  font-size:18px;
-  cursor:pointer;
+
+/* INVOICE BUTTON */
+.pdf-btn {
+    background: #ff5252;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 /* PAGINATION */
-.pagination{
-  display:flex;
-  justify-content:flex-end;
-  align-items:center;
-  gap:12px;
-  font-size:12px;
-  padding:10px;
+.pagination {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
 }
 
 /* MODAL */
-.modal-bg{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.5);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:20;
-}
-.modal{
-  background:#fff;
-  padding:20px;
-  width:320px;
-  border-radius:8px;
-}
-.modal h3{text-align:center;margin-top:0}
-.modal select,.modal input{
-  width:100%;
-  padding:8px;
-  margin-bottom:10px;
-}
-.modal button{
-  width:100%;
-  padding:10px;
-  background:#1976d2;
-  color:#fff;
-  border:none;
-  border-radius:4px;
-  cursor:pointer;
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
 }
 
-/* TOAST */
-.toast{
-  position:fixed;
-  top:20px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#e53935;
-  color:#fff;
-  padding:10px 20px;
-  border-radius:4px;
-  display:none;
-  z-index:30;
+.modal-box {
+    background: #fff;
+    padding: 20px;
+    width: 300px;
+    border-radius: 10px;
+}
+
+.modal-box h3 {
+    margin-top: 0;
+}
+
+.modal-box button {
+    margin-top: 10px;
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-radius: 6px;
+    background: #5a5cff;
+    color: white;
 }
 </style>
 </head>
 
 <body>
 
-<div class="wrapper">
+<div class="header">History</div>
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="logo">Logo</div>
-    <div class="icon">▦</div>
-    <div class="icon">✔</div>
-    <div class="icon">📊</div>
-    <div class="icon">⚙</div>
-  </div>
+<div class="card">
 
-  <!-- MAIN -->
-  <div class="main">
-
-    <div class="topbar">
-      <div class="topbar-title">VEHICLE MANAGEMENT</div>
-      <div class="user">
-        <span>Initial User</span>
-        <span style="color:#888">Administrator</span>
-      </div>
+    <div class="search-bar">
+        <input id="search" placeholder="Search by date or amount...">
+        <div class="filter-btn" onclick="toggleFilter()">Filter</div>
     </div>
 
-    <div class="content">
-
-      <div class="tabs">
-        <div class="tab">JobOrder</div>
-        <div class="tab">Parts</div>
-        <div class="tab">Payments</div>
-        <div class="tab active">History</div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <strong>History</strong>
-
-          <div style="display:flex;gap:12px;align-items:center">
-            <div class="search">
-              🔍 <input id="search" placeholder="Search">
-            </div>
-
-            <div class="filter-wrap">
-              <div class="filter-btn" onclick="toggleFilter()">⚙</div>
-              <div class="filter-pop" id="filterPop">
-                <span class="reset" onclick="resetFilters()">RESET</span>
-                <h4>FILTERS</h4>
-                <label>Arrival Date</label>
-                <input type="date" id="fa">
-                <label>Delivered Date</label>
-                <input type="date" id="fd">
-              </div>
-            </div>
-          </div>
+    <div class="filter-box" id="filterBox">
+        <label>Arrival Date</label>
+        <input type="date" id="arrivalFilter">
+        <label>Delivery Date</label>
+        <input type="date" id="deliveryFilter">
+        <div class="filter-actions">
+            <button class="reset" onclick="resetFilter()">Reset</button>
+            <button class="apply" onclick="applyFilter()">Apply</button>
         </div>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>ARRIVAL DATE</th>
-                <th>DELIVERY DATE</th>
-                <th>TOTAL HOURS</th>
-                <th>TOTAL AMOUNT (AED)</th>
-                <th>INVOICE</th>
-              </tr>
-            </thead>
-            <tbody id="tbody">
-              <tr>
-                <td>13-10-2025</td>
-                <td>14-10-2025</td>
-                <td>0:00</td>
-                <td>0.00</td>
-                <td class="pdf" onclick="openModal()">📄</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="pagination">
-          Rows per page: 10
-          <span>1–1 of 1</span>
-          ‹ ›
-        </div>
-      </div>
-
     </div>
-  </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Arrival Date</th>
+                <th>Delivery Date</th>
+                <th>Total Hours</th>
+                <th>Total Amount</th>
+                <th>Invoice</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+
+    <div class="pagination" id="pagination"></div>
 </div>
 
 <!-- MODAL -->
-<div class="modal-bg" id="modalBg">
-  <div class="modal">
-    <h3>Select Invoice Date</h3>
-    <label>Invoice Date</label>
-    <select id="dateType" onchange="toggleDate()">
-      <option value="current">Current Date</option>
-      <option value="delivery">Delivery Date</option>
-      <option value="custom">Pick a Date</option>
-    </select>
-    <input type="date" id="customDate" style="display:none">
-    <button onclick="submitInvoice()">SUBMIT</button>
-  </div>
+<div class="modal" id="invoiceModal">
+    <div class="modal-box">
+        <h3>Select Invoice Date</h3>
+        <input type="date" id="invoiceDate">
+        <button onclick="confirmInvoice()">Generate Invoice</button>
+    </div>
 </div>
 
-<div class="toast" id="toast">Please select an invoice date.</div>
-
 <script>
-function toggleFilter(){
-  filterPop.style.display=filterPop.style.display==="block"?"none":"block";
-}
-function resetFilters(){
-  fa.value="";fd.value="";
-}
-function openModal(){
-  modalBg.style.display="flex";
-}
-modalBg.onclick=e=>{if(e.target===modalBg)modalBg.style.display="none";}
-window.onkeydown=e=>{if(e.key==="Escape")modalBg.style.display="none";}
-function toggleDate(){
-  customDate.style.display=dateType.value==="custom"?"block":"none";
-}
-function submitInvoice(){
-  if(dateType.value==="custom"&&!customDate.value){
-    toast.style.display="block";
-    setTimeout(()=>toast.style.display="none",3000);
-    return;
-  }
-  alert("Invoice generated");
-  modalBg.style.display="none";
-}
-</script>
+const data = [
+    {id:1, arrival:"2025-10-13", delivery:"2025-10-14", hours:4.5, amount:1200},
+    {id:2, arrival:"2025-10-15", delivery:"2025-10-17", hours:6.25, amount:1800},
+    {id:3, arrival:"2025-10-18", delivery:"2025-10-19", hours:3.75, amount:950}
+];
 
+let filtered = [...data];
+let selectedJob = null;
+
+function formatDate(d){ return new Date(d).toLocaleDateString("en-GB"); }
+function formatMoney(v){ return new Intl.NumberFormat("en-US",{minimumFractionDigits:2}).format(v); }
+
+function render() {
+    const tbody = document.getElementById("tableBody");
+    tbody.innerHTML = "";
+    if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="no-data">No records found</td></tr>`;
+        return;
+    }
+    filtered.forEach(r=>{
+        tbody.innerHTML += `
+        <tr>
+            <td>${formatDate(r.arrival)}</td>
+            <td>${formatDate(r.delivery)}</td>
+            <td>${r.hours.toFixed(2)}</td>
+            <td>${formatMoney(r.amount)}</td>
+            <td><button class="pdf-btn" onclick="openInvoice(${r.id})">PDF</button></td>
+        </tr>`;
+    });
+}
+
+function toggleFilter(){
+    const f = document.getElementById("filterBox");
+    f.style.display = f.style.display === "block" ? "none" : "block";
+}
+
+function applyFilter(){
+    const a = document.getElementById("arrivalFilter").value;
+    const d = document.getElementById("deliveryFilter").value;
+
+    filtered = data.filter(x =>
+        (!a || x.arrival === a) &&
+        (!d || x.delivery === d)
+    );
+    render();
+}
+
+function resetFilter(){
+    document.getElementById("arrivalFilter").value = "";
+    document.getElementById("deliveryFilter").value = "";
+    filtered = [...data];
+    render();
+}
+
+function openInvoice(id){
+    selectedJob = id;
+    document.getElementById("invoiceModal").style.display = "flex";
+}
+
+function confirmInvoice(){
+    const date = document.getElementById("invoiceDate").value;
+    if(!date){
+        alert("Please select invoice date");
+        return;
+    }
+    alert("Invoice generated for Job ID " + selectedJob + " on " + date);
+    document.getElementById("invoiceModal").style.display = "none";
+}
+
+window.onclick = e => {
+    if(e.target.classList.contains("modal")){
+        e.target.style.display="none";
+    }
+}
+
+render();
+</script>
 </body>
 </html>
+
