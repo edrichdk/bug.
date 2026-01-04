@@ -7,21 +7,14 @@
 
 <style>
 * { box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
+body { margin: 0; background: #f4f6fb; }
 
-body {
-    margin: 0;
-    background: #f4f6fb;
-}
-
-/* HEADER */
 .header {
     padding: 20px 30px;
     font-size: 24px;
     font-weight: bold;
-    color: #333;
 }
 
-/* CARD */
 .card {
     margin: 0 30px;
     background: #E5E8FF;
@@ -30,52 +23,41 @@ body {
     box-shadow: 0 4px 4px rgba(0,0,0,0.25);
 }
 
-/* SEARCH */
 .search-bar {
     display: flex;
-    justify-content: space-between;
+    gap: 10px;
     margin-bottom: 15px;
 }
 
 .search-bar input {
-    width: 100%;
+    flex: 1;
     padding: 10px;
     border-radius: 6px;
     border: 1px solid #ccc;
 }
 
 .filter-btn {
-    margin-left: 10px;
     padding: 10px 14px;
     background: #5a5cff;
-    color: #fff;
+    color: white;
     border-radius: 6px;
     cursor: pointer;
 }
 
-/* FILTER POPUP */
 .filter-box {
     position: absolute;
     right: 40px;
     top: 160px;
     width: 220px;
-    background: #fff;
-    border-radius: 8px;
+    background: white;
     padding: 15px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    border-radius: 8px;
     display: none;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
-.filter-box label {
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.filter-box input {
-    width: 100%;
-    margin: 6px 0 10px;
-    padding: 6px;
-}
+.filter-box label { font-size: 12px; font-weight: bold; }
+.filter-box input { width: 100%; margin-bottom: 10px; padding: 6px; }
 
 .filter-actions {
     display: flex;
@@ -89,10 +71,9 @@ body {
     cursor: pointer;
 }
 
-.apply { background:#5a5cff;color:#fff;}
-.reset { background:#eee; }
+.apply { background: #5a5cff; color: white; }
+.reset { background: #eee; }
 
-/* TABLE */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -105,19 +86,13 @@ th {
     text-align: left;
 }
 
-td {
-    padding: 12px;
-}
+td { padding: 12px; }
 
-tr:nth-child(even) { background: #fff; }
-tr:nth-child(odd) { background: #F7F6FE; }
+tr:nth-child(even){ background: #fff; }
+tr:nth-child(odd){ background: #F7F6FE; }
 
-.no-data {
-    text-align: center;
-    padding: 20px;
-}
+.no-data { text-align: center; padding: 20px; }
 
-/* INVOICE BUTTON */
 .pdf-btn {
     background: #ff5252;
     color: white;
@@ -129,10 +104,27 @@ tr:nth-child(odd) { background: #F7F6FE; }
 
 /* PAGINATION */
 .pagination {
-    margin-top: 10px;
+    margin-top: 15px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     font-size: 14px;
+}
+
+.pagination select { padding: 5px; }
+
+.pagination button {
+    padding: 5px 10px;
+    background: #5a5cff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pagination button:disabled {
+    background: #aaa;
+    cursor: not-allowed;
 }
 
 /* MODAL */
@@ -146,24 +138,20 @@ tr:nth-child(odd) { background: #F7F6FE; }
 }
 
 .modal-box {
-    background: #fff;
+    background: white;
     padding: 20px;
     width: 300px;
     border-radius: 10px;
-}
-
-.modal-box h3 {
-    margin-top: 0;
 }
 
 .modal-box button {
     margin-top: 10px;
     width: 100%;
     padding: 8px;
-    border: none;
-    border-radius: 6px;
     background: #5a5cff;
     color: white;
+    border: none;
+    border-radius: 6px;
 }
 </style>
 </head>
@@ -203,10 +191,26 @@ tr:nth-child(odd) { background: #F7F6FE; }
         <tbody id="tableBody"></tbody>
     </table>
 
-    <div class="pagination" id="pagination"></div>
+    <div class="pagination">
+        <div>
+            Rows per page:
+            <select id="rowsPerPage">
+                <option>5</option>
+                <option selected>10</option>
+                <option>20</option>
+            </select>
+        </div>
+
+        <div id="pageInfo"></div>
+
+        <div>
+            <button id="prevBtn">Previous</button>
+            <button id="nextBtn">Next</button>
+        </div>
+    </div>
 </div>
 
-<!-- MODAL -->
+<!-- INVOICE MODAL -->
 <div class="modal" id="invoiceModal">
     <div class="modal-box">
         <h3>Select Invoice Date</h3>
@@ -217,82 +221,166 @@ tr:nth-child(odd) { background: #F7F6FE; }
 
 <script>
 const data = [
-    {id:1, arrival:"2025-10-13", delivery:"2025-10-14", hours:4.5, amount:1200},
-    {id:2, arrival:"2025-10-15", delivery:"2025-10-17", hours:6.25, amount:1800},
-    {id:3, arrival:"2025-10-18", delivery:"2025-10-19", hours:3.75, amount:950}
+
+ {id:1, arrival:"2025-10-01", delivery:"2025-10-02", hours:4.5, amount:1200},
+ {id:2, arrival:"2025-10-03", delivery:"2025-10-04", hours:6.0, amount:1500},
+ {id:3, arrival:"2025-10-05", delivery:"2025-10-06", hours:3.75, amount:950},
+ {id:4, arrival:"2025-10-07", delivery:"2025-10-08", hours:7.25, amount:2100},
+ {id:5, arrival:"2025-10-09", delivery:"2025-10-10", hours:5.0, amount:1400},
+ {id:6, arrival:"2025-10-11", delivery:"2025-10-12", hours:8.0, amount:2400},
+ {id:7, arrival:"2025-10-13", delivery:"2025-10-14", hours:4.25, amount:1150},
+ {id:8, arrival:"2025-10-15", delivery:"2025-10-16", hours:6.5, amount:1800},
+ {id:9, arrival:"2025-10-17", delivery:"2025-10-18", hours:3.5, amount:900},
+ {id:10, arrival:"2025-10-19", delivery:"2025-10-20", hours:7.75, amount:2300},
+
+ {id:11, arrival:"2025-10-21", delivery:"2025-10-22", hours:5.25, amount:1600},
+ {id:12, arrival:"2025-10-23", delivery:"2025-10-24", hours:6.75, amount:1950},
+ {id:13, arrival:"2025-10-25", delivery:"2025-10-26", hours:4.0, amount:1100},
+ {id:14, arrival:"2025-10-27", delivery:"2025-10-28", hours:8.5, amount:2600},
+ {id:15, arrival:"2025-10-29", delivery:"2025-10-30", hours:5.5, amount:1550},
+
+ {id:16, arrival:"2025-11-01", delivery:"2025-11-02", hours:6.25, amount:1850},
+ {id:17, arrival:"2025-11-03", delivery:"2025-11-04", hours:3.75, amount:1000},
+ {id:18, arrival:"2025-11-05", delivery:"2025-11-06", hours:7.0, amount:2150},
+ {id:19, arrival:"2025-11-07", delivery:"2025-11-08", hours:5.0, amount:1450},
+ {id:20, arrival:"2025-11-09", delivery:"2025-11-10", hours:8.25, amount:2500},
+
+ {id:21, arrival:"2025-11-11", delivery:"2025-11-12", hours:4.5, amount:1200},
+ {id:22, arrival:"2025-11-13", delivery:"2025-11-14", hours:6.0, amount:1700},
+ {id:23, arrival:"2025-11-15", delivery:"2025-11-16", hours:3.25, amount:850},
+ {id:24, arrival:"2025-11-17", delivery:"2025-11-18", hours:7.5, amount:2250},
+ {id:25, arrival:"2025-11-19", delivery:"2025-11-20", hours:5.75, amount:1650},
+
+ {id:26, arrival:"2025-11-21", delivery:"2025-11-22", hours:6.5, amount:1900},
+ {id:27, arrival:"2025-11-23", delivery:"2025-11-24", hours:4.0, amount:1100},
+ {id:28, arrival:"2025-11-25", delivery:"2025-11-26", hours:8.0, amount:2400},
+ {id:29, arrival:"2025-11-27", delivery:"2025-11-28", hours:5.25, amount:1500},
+ {id:30, arrival:"2025-11-29", delivery:"2025-11-30", hours:7.75, amount:2350},
+
+ {id:31, arrival:"2025-12-01", delivery:"2025-12-02", hours:6.0, amount:1750},
+ {id:32, arrival:"2025-12-03", delivery:"2025-12-04", hours:3.5, amount:900},
+ {id:33, arrival:"2025-12-05", delivery:"2025-12-06", hours:8.25, amount:2550},
+ {id:34, arrival:"2025-12-07", delivery:"2025-12-08", hours:5.0, amount:1400},
+ {id:35, arrival:"2025-12-09", delivery:"2025-12-10", hours:6.75, amount:2000}
+
 ];
 
 let filtered = [...data];
+let page = 1;
+let rowsPerPage = 10;
 let selectedJob = null;
 
 function formatDate(d){ return new Date(d).toLocaleDateString("en-GB"); }
-function formatMoney(v){ return new Intl.NumberFormat("en-US",{minimumFractionDigits:2}).format(v); }
 
-function render() {
+function render(){
     const tbody = document.getElementById("tableBody");
     tbody.innerHTML = "";
-    if (!filtered.length) {
+
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const pageData = filtered.slice(start, end);
+
+    if(!pageData.length){
         tbody.innerHTML = `<tr><td colspan="5" class="no-data">No records found</td></tr>`;
         return;
     }
-    filtered.forEach(r=>{
+
+    pageData.forEach(r=>{
         tbody.innerHTML += `
         <tr>
             <td>${formatDate(r.arrival)}</td>
             <td>${formatDate(r.delivery)}</td>
             <td>${r.hours.toFixed(2)}</td>
-            <td>${formatMoney(r.amount)}</td>
+            <td>${r.amount}</td>
             <td><button class="pdf-btn" onclick="openInvoice(${r.id})">PDF</button></td>
         </tr>`;
     });
+
+    renderPageInfo();
 }
 
+function renderPageInfo(){
+    const total = filtered.length;
+    const start = total ? (page - 1) * rowsPerPage + 1 : 0;
+    const end = Math.min(page * rowsPerPage, total);
+
+    document.getElementById("pageInfo").innerText =
+        `Showing ${start}–${end} of ${total} entries`;
+
+    prevBtn.disabled = page === 1;
+    nextBtn.disabled = end >= total;
+}
+
+/* SEARCH */
+search.addEventListener("input", () => {
+    const q = search.value.toLowerCase();
+    filtered = data.filter(x =>
+        x.arrival.includes(q) ||
+        x.delivery.includes(q) ||
+        x.amount.toString().includes(q)
+    );
+    page = 1;
+    render();
+});
+
+/* FILTER */
 function toggleFilter(){
-    const f = document.getElementById("filterBox");
-    f.style.display = f.style.display === "block" ? "none" : "block";
+    filterBox.style.display = filterBox.style.display === "block" ? "none" : "block";
 }
 
 function applyFilter(){
-    const a = document.getElementById("arrivalFilter").value;
-    const d = document.getElementById("deliveryFilter").value;
+    const a = arrivalFilter.value;
+    const d = deliveryFilter.value;
 
     filtered = data.filter(x =>
         (!a || x.arrival === a) &&
         (!d || x.delivery === d)
     );
+    page = 1;
     render();
+    filterBox.style.display = "none";
 }
 
 function resetFilter(){
-    document.getElementById("arrivalFilter").value = "";
-    document.getElementById("deliveryFilter").value = "";
+    arrivalFilter.value = "";
+    deliveryFilter.value = "";
     filtered = [...data];
+    page = 1;
     render();
 }
 
+/* PAGINATION */
+rowsPerPageSelect = document.getElementById("rowsPerPage");
+rowsPerPageSelect.onchange = () => {
+    rowsPerPage = Number(rowsPerPageSelect.value);
+    page = 1;
+    render();
+};
+
+prevBtn.onclick = () => { if(page > 1){ page--; render(); } };
+nextBtn.onclick = () => { if(page * rowsPerPage < filtered.length){ page++; render(); } };
+
+/* INVOICE */
 function openInvoice(id){
     selectedJob = id;
-    document.getElementById("invoiceModal").style.display = "flex";
+    invoiceModal.style.display = "flex";
 }
 
 function confirmInvoice(){
-    const date = document.getElementById("invoiceDate").value;
-    if(!date){
-        alert("Please select invoice date");
-        return;
-    }
-    alert("Invoice generated for Job ID " + selectedJob + " on " + date);
-    document.getElementById("invoiceModal").style.display = "none";
+    const d = invoiceDate.value;
+    if(!d){ alert("Select invoice date"); return; }
+    alert(`Invoice generated for Job ID ${selectedJob} on ${d}`);
+    invoiceModal.style.display = "none";
 }
 
 window.onclick = e => {
-    if(e.target.classList.contains("modal")){
-        e.target.style.display="none";
-    }
-}
+    if(e.target.classList.contains("modal")) e.target.style.display = "none";
+};
 
 render();
 </script>
+
 </body>
 </html>
+
 
